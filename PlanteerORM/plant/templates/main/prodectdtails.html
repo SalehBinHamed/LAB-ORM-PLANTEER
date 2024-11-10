@@ -1,0 +1,53 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+
+<div class="container w-[90%] mt-[6%] mx-auto mt-4">
+    <div class="flex flex-col md:flex-row items-start bg-white w-full rounded-lg shadow">
+        <img class="object-cover w-full h-[70%] md:w-1/2 md:h-full md:rounded-none md:rounded-l-lg" src="{{ plant.image.url }}" alt="{{ plant.name }}">
+        
+        <div class="flex flex-col justify-between p-6 leading-normal w-full md:w-1/2">
+            <h5 class="mb-4 text-3xl font-bold tracking-tight text-gray-900">{{ plant.name }}</h5>
+            <p class="mb-3 font-normal text-gray-700">
+                {{ plant.about }}
+            </p>
+            <p class="mb-3 font-normal text-gray-700">
+                 <strong>used for:</strong>{{ plant.used_for }}
+            </p>
+            <p class="mb-3 font-normal text-gray-700">
+                Category: {{ plant.get_category_display }}
+            </p>
+            <p class="mb-3 font-normal text-gray-700">
+                {% if plant.is_edible %}
+                    <span class="text-green-600 font-semibold">Edible</span>
+                {% else %}
+                    <span class="text-red-600 font-semibold">Not Edible</span>
+                {% endif %}
+            </p>
+            <div class="mt-4 flex space-x-4">
+                <a href="{% url 'plant:update' plant_id=plant.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Update</a>
+                <form action="{% url 'plant:delete' plant_id=plant.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container w-[90%] mx-auto mt-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-900">Other Plants You May Like</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for other_plant in other_plants %}
+        <a href="{% url 'plant:details_views' plant_id=other_plant.id %}" class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
+            <img class="object-cover w-full h-48 rounded-t-lg md:h-48 md:w-full md:rounded-none md:rounded-t-lg" src="{{ other_plant.image.url }}" alt="{{ other_plant.name }}">
+            <div class="flex flex-col justify-between p-4 leading-normal">
+                <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900">{{ other_plant.name }}</h5>
+                <p class="mb-3 font-normal text-gray-700">{{ other_plant.about|truncatechars:100 }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

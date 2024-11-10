@@ -1,0 +1,46 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container w-[90%] mx-auto mt-[10%]">
+    <form action="{% url 'plant:search_views' %}" method="GET" class="w-[60%] mx-auto mb-6">
+        <div class="flex items-center space-x-4">
+            <select name="category" class="border rounded p-2">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="text" name="search" placeholder="Search plants..." class="p-2 border rounded w-full" value="{{ request.GET.search }}">
+
+            <label class="flex items-center">
+                <input type="checkbox" name="is_edible" class="mr-2" {% if request.GET.is_edible == 'on' %}checked{% endif %}>
+                Edible
+            </label>
+
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+        </div>
+    </form>
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% if plants %}
+            {% for plant in plants %}
+            <a href="{% url 'plant:details_views' plant_id=plant.id %}" class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row hover:bg-gray-100">
+                <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg" src="{{ plant.image.url }}" alt="{{ plant.name }}">
+                <div class="flex flex-col justify-between p-4 leading-normal">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ plant.name }}</h5>
+                    <p class="mb-3 font-normal text-gray-700">{{ plant.about|truncatechars:100 }}</p>
+                    <p class="text-sm text-gray-600">Category: {{ plant.get_category_display }}</p>
+                    {% if plant.is_edible %}
+                    <span class="text-green-600 font-semibold">Edible</span>
+                    {% else %}
+                    <span class="text-red-600 font-semibold">Not Edible</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p>No plants found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

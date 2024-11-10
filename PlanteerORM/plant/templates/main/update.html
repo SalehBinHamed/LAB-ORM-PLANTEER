@@ -1,0 +1,59 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+
+<div class="container mx-auto mt-12 px-4">
+    <div class="flex flex-col md:flex-row items-center bg-white w-full rounded-lg shadow-lg overflow-hidden">
+        <img class="hidden md:block md:w-1/2 h-full object-cover" src="{{ plant.image.url }}" alt="{{ plant.name }}">
+        
+        <div class="w-full md:w-1/2 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Update Plant Information</h2>
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" name="name"  value="{{ plant.name }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+
+                <div>
+                    <label for="about" class="block text-sm font-medium text-gray-700">About</label>
+                    <textarea  name="about"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>{{ plant.about }}</textarea>
+                </div>
+
+                <div>
+                    <label for="used_for" class="block text-sm font-medium text-gray-700">Used For</label>
+                    <textarea  name="used_for"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>{{ plant.used_for }}</textarea>
+                </div>
+
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700">Change Image</label>
+                    <input type="file"  name="image" class="mt-1 block w-full text-sm text-gray-700 border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-blue-500 focus:border-blue-500" accept="image/*">
+                    <p class="mt-2 text-sm text-gray-500">Current image will be kept if no new image is uploaded.</p>
+                </div>
+
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select  name="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        {% for key, value in CategoryChoices %}
+                        <option value="{{ key }}" {% if plant.category == key %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="flex items-center">
+                    <input  name="is_edible" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" {% if plant.is_edible %}checked{% endif %}>
+                    <label for="is_edible" class="ml-2 block text-sm text-gray-700">Is it edible?</label>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
